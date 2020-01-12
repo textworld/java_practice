@@ -1,4 +1,4 @@
-package cn.textworld.java.algorithms.heap;
+package cn.textworld.java.alg4.heap;
 
 public class ArrayHeap<T extends Comparable<? super T>> implements Heap<T> {
     private T[] node;
@@ -14,6 +14,16 @@ public class ArrayHeap<T extends Comparable<? super T>> implements Heap<T> {
         length = 0;
         this.capacity = capacity;
         node = (T[]) new Comparable[capacity+1];
+    }
+
+    @Override
+    public int size() {
+        return length;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return length == 0;
     }
 
     public T deleteMax() {
