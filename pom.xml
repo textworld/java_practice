@@ -11,6 +11,7 @@
     <modules>
         <module>proxytest</module>
         <module>alg4</module>
+        <module>retrofit_demo</module>
     </modules>
 
     <build>
