@@ -25,6 +25,11 @@ public interface Table extends Cloneable, Serializable {
     void commit(boolean all) throws IllegalStateException;
     void rollback(boolean all) throws IllegalStateException;
 
+    /*
+     * 数据修改
+     */
+    int update(Selector where);
+
     void export(Exporter exporter) throws IOException;
     interface Exporter{
         void startTable();

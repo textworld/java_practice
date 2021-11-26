@@ -74,6 +74,23 @@ public class ConcreteTable implements Table{
         } while (all && !transactionStack.isEmpty());
     }
 
+    @Override
+    public int update(Selector where) {
+        Results currentRow = (Results) rows();
+        Cursor[] envelope = new Cursor[] {currentRow};
+
+        int updated = 0;
+
+        while(currentRow.advance()) {
+            if (where.approve(envelope)) {
+                where.modify(currentRow);
+                ++updated;
+            }
+        }
+
+        return updated;
+    }
+
     private int width(){
         return columnNames.length;
     }
