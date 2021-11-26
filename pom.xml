@@ -12,6 +12,8 @@
         <module>proxytest</module>
         <module>alg4</module>
         <module>retrofit_demo</module>
+        <module>jdk_proxy_aop_demo</module>
+        <module>embbed_sql</module>
     </modules>
 
     <build>
