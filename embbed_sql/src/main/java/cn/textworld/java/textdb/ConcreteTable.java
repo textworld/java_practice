@@ -1,12 +1,10 @@
 package cn.textworld.java.textdb;
 
+import cn.textworld.java.textdb.cursor.Cursor;
 import org.apache.commons.collections4.iterators.ArrayIterator;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ConcreteTable implements Table{
 
@@ -203,6 +201,67 @@ public class ConcreteTable implements Table{
         @Override
         public void execute() {
             row[cell] = oldContents;
+        }
+    }
+
+    public Cursor rows() {
+        return new Results();
+    }
+
+    private final class Results implements Cursor {
+        private final Iterator rowIterator = rowSet.iterator();
+        private Object[] row = null;
+
+        @Override
+        public String tableName() {
+            return tableName;
+        }
+
+        @Override
+        public boolean advance() throws NoSuchElementException {
+            if (rowIterator.hasNext()) {
+                row = (Object[]) rowIterator.next();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Object column(String columnName) {
+            return row[indexOf(columnName)];
+        }
+
+        @Override
+        public Iterator<Object> columns() {
+            return new ArrayIterator<>(row);
+        }
+
+        @Override
+        public boolean isTraversing(Table t) {
+            return t == ConcreteTable.this;
+        }
+
+        @Override
+        public Object update(String columnName, Object newValue) {
+            int index = indexOf(columnName);
+
+            if (row[index] == newValue) {
+                throw new IllegalStateException("May not replace object with itself");
+            }
+
+            Object oldValue = row[index];
+            row[index] = newValue;
+            isDirty = true;
+            registerUpdate(row, index, oldValue);
+            return oldValue;
+        }
+
+        @Override
+        public void delete() {
+            Object[] oldRow = row;
+            rowIterator.remove();
+            isDirty = true;
+            registerDelete(oldRow);
         }
     }
 }

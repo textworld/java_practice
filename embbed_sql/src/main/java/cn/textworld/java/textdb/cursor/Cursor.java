@@ -12,7 +12,7 @@ public interface Cursor {
 
     Object column(String columnName);
 
-    Iterator<String> columns();
+    Iterator<Object> columns();
 
     boolean isTraversing(Table t);
 
