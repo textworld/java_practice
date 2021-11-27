@@ -29,6 +29,9 @@ public interface Table extends Cloneable, Serializable {
      * 数据修改
      */
     int update(Selector where);
+    int delete(Selector where);
+
+    Table select(Selector where);
 
     void export(Exporter exporter) throws IOException;
     interface Exporter{

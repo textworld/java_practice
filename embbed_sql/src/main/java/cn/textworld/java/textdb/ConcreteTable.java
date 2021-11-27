@@ -40,6 +40,20 @@ public class ConcreteTable implements Table{
         importer.endTable();
     }
 
+    public Table select(Selector where) {
+        Table resultTable = new ConcreteTable(null, (String[])columnNames.clone());
+        Results currentRow = (Results) rows();
+        Cursor[] envelope = new Cursor[]{currentRow};
+
+        while(currentRow.advance()) {
+            if (where.approve(envelope)) {
+                resultTable.insert((Object[]) currentRow.cloneRow());
+            }
+        }
+
+        // return new UnmodifiableTable(resultTable);
+    }
+
     @Override
     public void begin() {
         transactionStack.addLast(new LinkedList<>());
@@ -89,6 +103,21 @@ public class ConcreteTable implements Table{
         }
 
         return updated;
+    }
+
+    @Override
+    public int delete(Selector where) {
+        int deleted = 0;
+        Results currentRow = (Results) rows();
+        Cursor[] envelope = new Cursor[]{currentRow};
+
+        while(currentRow.advance()) {
+            if (where.approve(envelope)) {
+                currentRow.delete();
+                ++deleted;
+            }
+        }
+        return deleted;
     }
 
     private int width(){
@@ -280,5 +309,11 @@ public class ConcreteTable implements Table{
             isDirty = true;
             registerDelete(oldRow);
         }
+        // TODO cloneRow的实现
+        Object cloneRow(){
+            return row.clone();
+        }
+
+
     }
 }
